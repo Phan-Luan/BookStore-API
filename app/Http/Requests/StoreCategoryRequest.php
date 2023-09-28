@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCategoryRequest extends FormRequest
 {
@@ -21,22 +23,27 @@ class StoreCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        if(request()->isMethod('post')) {
+        if (request()->isMethod('post')) {
             return [
-                'name' => 'required|string|max:258',
+                'name' => 'required|string|max:258|unique:Categories,name',
                 'image' => 'required',
             ];
         } else {
             return [
-                'name' => 'required|string|max:258',
+                'name' => [
+                    'required',
+                    "string",
+                    'max:255',
+                    Rule::unique(Category::class)->ignore($this->category)
+                ],
                 'image' => 'nullable',
             ];
         }
     }
-  
+
     public function messages()
     {
-        if(request()->isMethod('post')) {
+        if (request()->isMethod('post')) {
             return [
                 'name.required' => 'Name is required!',
                 'image.required' => 'Image is required!',
@@ -44,7 +51,7 @@ class StoreCategoryRequest extends FormRequest
         } else {
             return [
                 'name.required' => 'Name is required!',
-            ];   
+            ];
         }
     }
 }

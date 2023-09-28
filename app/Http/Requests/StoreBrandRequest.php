@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Brand;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreBrandRequest extends FormRequest
 {
@@ -21,15 +23,20 @@ class StoreBrandRequest extends FormRequest
      */
     public function rules(): array
     {
-        if(request()->isMethod('post')) {
+        if (request()->isMethod('post')) {
             return [
-                'name' => 'required|string|max:258',
+                'name' => 'required|string|max:258|unique:brands,name',
                 'image' => 'required',
                 'description' => 'required|string'
             ];
         } else {
             return [
-                'name' => 'required|string|max:258',
+                'name' => [
+                    'required',
+                    "string",
+                    'max:255',
+                    Rule::unique(Brand::class)->ignore($this->brand)
+                ],
                 'image' => 'nullable',
                 'description' => 'required|string'
             ];
