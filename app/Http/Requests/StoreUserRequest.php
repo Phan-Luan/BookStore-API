@@ -11,10 +11,10 @@ class StoreUserRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    // public function authorize(): bool
-    // {
-    //     return false;
-    // }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -31,7 +31,8 @@ class StoreUserRequest extends FormRequest
                 'password' => 'required',
                 'phone' => 'required|string',
                 'address' => 'required|string',
-                'gender' => 'required'
+                'gender' => 'required',
+                'role_ids'=>'array'
             ];
         } else {
             return [
@@ -44,7 +45,8 @@ class StoreUserRequest extends FormRequest
                 ],
                 'phone' => 'required|string',
                 'address' => 'required|string',
-                'gender' => 'required'
+                'gender' => 'required',
+                'role_ids'=>'array'
             ];
         }
     }

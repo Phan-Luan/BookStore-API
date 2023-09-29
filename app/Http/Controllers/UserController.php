@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     protected $user;
-    public function __construct(User $user)
+    protected $role;
+    public function __construct(User $user, Role $role)
     {
         $this->user = $user;
+        $this->role = $role;
     }
     /**
      * Display a listing of the resource.
@@ -28,7 +31,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles = $this->role->all()->groupBy('group');
+        return response()->json($roles);
     }
 
     /**
@@ -38,41 +42,45 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user = $this->user->create($data);
-
+        $user->roles()->attach($data['role_ids']);
         return response()->json($user);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show($id)
     {
-        return response()->json($user);
+        $user = $this->user->findOrFail($id)->load('roles');
+        return response()->json( $user);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        return response()->json($user);
+        $user = $this->user->findOrFail($id)->load('roles');
+        return response()->json(
+            $user,
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreUserRequest $request, User $user)
+    public function update(Request $request, string $id)
     {
-        $data = $request->validated();
-        $user->update($data);
+        // $dataUpdate = $request->validate($request);
+        $dataUpdate = $request->except('password');
+        $user = $this->user->findOrFail($id)->load('roles');
+        $user->update($dataUpdate);
+        $user->roles()->sync($dataUpdate['role_ids'] ?? []);
         return response()->json($user);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
+    public function destroy(string $id)
     {
+        $user = $this->user->findOrFail($id)->load('roles');
         $user->delete();
         return response()->json($user);
     }

@@ -25,11 +25,6 @@ class AdminSeeder extends Seeder
         foreach ($roles as $role) {
             Role::updateOrCreate($role);
         }
-        $superAdmin = User::whereEmail('luanpv2003@gmail.com')->first();
-        if (!$superAdmin) {
-            $superAdmin = User::factory()->create(['email' => 'admin@gmail.com']);
-        }
-        $superAdmin->assignRole('super-admin');
 
         $permissions = [
             ['name' => 'create-user', 'display_name' => 'Create user', 'group' => 'user'],
