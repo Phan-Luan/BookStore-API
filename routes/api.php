@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LoginGoogleController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Auth;
@@ -59,11 +63,18 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/{product}', 'destroy')->name('destroy')->middleware('permission: delete-product');
     Route::get('/{product}/edit', 'edit')->name('edit')->middleware('permission: update-product');
   });
+  Route::get('/cart-client/{userid}', [CartController::class, 'index']);
+  Route::post('/addtocart', [CartController::class, 'store']);
+  Route::delete('/delete-cart/{cart}', [CartController::class, 'destroy']);
+  Route::put('/update-cart/{cart}', [CartController::class, 'update']);
+  Route::delete('/delete-cart-user/{user_id}', [CartController::class, 'deleteCart']);
+  Route::post('/place-order', [CartController::class, 'storeOrder']);
+  Route::get('/list-order/{user}', [OrderController::class, 'index']);
+  Route::get('/list-cart-order/{order_id}', [OrderController::class, 'orderDetail']);
+  Route::post('/comments', [CommentController::class, 'store']);
 });
-
-
-// // Route::resource('categories', CategoryController::class)->middleware('auth:sanctum');
-// // Route::resource('brands', BrandController::class)->middleware('auth:sanctum');
-// // Route::resource('products', ProductController::class)->middleware('auth:sanctum');
-// // Route::resource('roles', RoleController::class)->middleware('auth:sanctum');
-// // Route::resource('users', UserController::class)->middleware('auth:sanctum');
+Route::get('/comments/{productId}', [CommentController::class, 'index']);
+Route::get('product', [ProductController::class, 'index']);
+Route::get('product/{product}', [ProductController::class, 'show']);
+Route::get('cart', [CartController::class, 'index']);
+Route::post('login/google', [LoginGoogleController::class, 'login']);

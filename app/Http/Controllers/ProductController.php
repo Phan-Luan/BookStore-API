@@ -26,9 +26,14 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $products = $this->product->with(['brand', 'category'])->latest('id')->where('name', 'like', '%' . $search . '%')->paginate(5);
+        $products = $this->product->with(['brand', 'category'])
+            ->where('quantity', '>', 0)
+            ->where('name', 'like', '%' . $search . '%')
+            ->latest('id')
+            ->paginate(5);
         return response()->json($products);
     }
+
 
     /**
      * Show the form for creating a new resource.

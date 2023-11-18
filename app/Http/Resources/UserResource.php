@@ -14,13 +14,17 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $tokenTimestamp = now()->addMinutes(30)->timestamp * 1000;
+
         return [
             'user_id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'image' => $this->image,
             'token' => $this->createToken("Token")->plainTextToken,
             'roles' => $this->roles->pluck('name') ?? [],
             'roles.permissions' => $this->getPermissionsViaRoles()->pluck('name') ?? [],
+            'token_timestamp' => $tokenTimestamp, // Thêm timestamp của token
         ];
     }
 }

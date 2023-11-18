@@ -31,7 +31,7 @@ class StoreProductRequest extends FormRequest
                 'quantity' => 'required|numeric',
                 'number_of_page' => 'required|numeric',
                 'public_date' => 'required',
-                'sale_price' => 'required|numeric',
+                'sale_price' => 'nullable|numeric',
                 'category_id' => 'required|numeric',
                 'brand_id' => 'required|numeric',
             ];
@@ -43,7 +43,7 @@ class StoreProductRequest extends FormRequest
                 'price' => 'required|numeric',
                 'quantity' => 'required|numeric',
                 'number_of_page' => 'required|numeric',
-                'sale_price' => 'required|numeric',
+                'sale_price' => 'nullable|numeric',
                 'author' => 'required|string',
                 'public_date' => 'required',
                 'category_id' => 'required|numeric',
